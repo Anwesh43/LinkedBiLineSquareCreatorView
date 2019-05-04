@@ -191,4 +191,26 @@ class BiLineSquareCreatorView(ctx : Context) : View(ctx) {
             curr.startUpdating(cb)
         }
     }
+
+    data class Renderer(var view : BiLineSquareCreatorView) {
+
+        private val blsc : BiLineSquareCreator = BiLineSquareCreator(0)
+        private val animator : Animator = Animator(view)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(backColor)
+            blsc.draw(canvas, paint)
+            animator.animate {
+                blsc.update {i, scl ->
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            blsc.startUpdating {
+                animator.start()
+            }
+        }
+    }
 }
