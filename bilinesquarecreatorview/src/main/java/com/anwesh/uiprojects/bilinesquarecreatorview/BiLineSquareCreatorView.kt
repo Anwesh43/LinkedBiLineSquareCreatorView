@@ -11,6 +11,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Canvas
+import android.test.ActivityTestCase
 
 val nodes : Int = 5
 val lines : Int = 2
@@ -212,6 +213,15 @@ class BiLineSquareCreatorView(ctx : Context) : View(ctx) {
             blsc.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+
+        fun create(activity : Activity) : BiLineSquareCreatorView {
+            val view : BiLineSquareCreatorView = BiLineSquareCreatorView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }
