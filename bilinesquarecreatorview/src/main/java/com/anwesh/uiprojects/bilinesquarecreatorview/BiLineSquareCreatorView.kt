@@ -11,7 +11,6 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Canvas
-import android.test.ActivityTestCase
 
 val nodes : Int = 5
 val lines : Int = 2
@@ -21,6 +20,7 @@ val strokeFactor : Int = 90
 val sizeFactor : Float = 2.9f
 val foreColor : Int = Color.GREEN
 val backColor : Int = Color.parseColor("#BDBDBD")
+val delay : Long = 20
 
 fun Int.inverse() : Float = 1f / this
 fun Float.scaleFactor() : Float = Math.floor(this / scDiv).toFloat()
@@ -35,11 +35,13 @@ fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b)
 fun Canvas.drawRotLine(i : Int, gap : Float, size : Float, sc1 : Float, sc2 : Float, paint : Paint) {
     val sf : Float = 1f - 2 * i
     val x : Float = gap + (size - gap) * sc1.divideScale(i, lines)
-    save()
-    translate(x * sf, -size * sf)
-    rotate(90f * sc2.divideScale(i, lines))
-    drawLine(0f, 0f, 0f, 2 * size * sf, paint)
-    restore()
+    for (k in 0..(lines - 1)) {
+        save()
+        translate(x * sf, -size * sf)
+        rotate(90f * sc2.divideScale(i, lines) * k)
+        drawLine(0f, 0f, 0f, 2 * size * sf, paint)
+        restore()
+    }
 }
 
 fun Canvas.drawBLSCNode(i : Int, scale : Float, paint : Paint) {
@@ -49,7 +51,7 @@ fun Canvas.drawBLSCNode(i : Int, scale : Float, paint : Paint) {
     val size : Float = gap / sizeFactor
     paint.color = foreColor
     paint.strokeWidth = Math.min(w, h) / strokeFactor
-    paint.color
+    paint.strokeCap = Paint.Cap.ROUND
     val sc1 : Float = scale.divideScale(0, 2)
     val sc2 : Float = scale.divideScale(1, 2)
     save()
@@ -104,7 +106,7 @@ class BiLineSquareCreatorView(ctx : Context) : View(ctx) {
             if (animated) {
                 cb()
                 try {
-                    Thread.sleep(50)
+                    Thread.sleep(delay)
                     view.invalidate()
                 } catch(ex : Exception) {
 
