@@ -30,3 +30,31 @@ fun Float.mirrorValue(a : Int, b : Int) : Float {
     return (1 - k) * a.inverse() + k * b.inverse()
 }
 fun Float.updateValue(dir : Float, a : Int, b : Int) : Float = mirrorValue(a, b) * dir * scGap
+
+fun Canvas.drawRotLine(i : Int, gap : Float, size : Float, sc1 : Float, sc2 : Float, paint : Paint) {
+    val sf : Float = 1f - 2 * i
+    val x : Float = gap + (size - gap) * sc1.divideScale(i, lines)
+    save()
+    translate(x * sf, -size * sf)
+    rotate(90f * sc2.divideScale(i, lines))
+    drawLine(0f, 0f, 0f, 2 * size * sf, paint)
+    restore()
+}
+
+fun Canvas.drawBLSCNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    val gap : Float = h / (nodes + 1)
+    val size : Float = gap / sizeFactor
+    paint.color = foreColor
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    paint.color
+    val sc1 : Float = scale.divideScale(0, 2)
+    val sc2 : Float = scale.divideScale(1, 2)
+    save()
+    translate(w / 2, gap * (i + 1))
+    for (j in 0..(lines - 1)) {
+        drawRotLine(j, 0.4f * w, size, sc1, sc2, paint)
+    }
+    restore()
+}
